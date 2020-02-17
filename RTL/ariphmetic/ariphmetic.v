@@ -1,3 +1,7 @@
+//Date: 02/17/2020
+//Ariphmetic module for Piphagore theorem
+
+
 module ariphmetic(
 	input [8:0] x_axis,
 	input [8:0] y_axis,
