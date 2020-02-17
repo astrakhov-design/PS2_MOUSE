@@ -1,0 +1,15 @@
+F:/Programming/FPGA/PS2_MOUSE/RTL/ariphmetic/ariphmetic.v {1 {vlog -work work -stats=none F:/Programming/FPGA/PS2_MOUSE/RTL/ariphmetic/ariphmetic.v
+Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+-- Compiling module ariphmetic
+
+Top level modules:
+	ariphmetic
+
+} {} {}} F:/Programming/FPGA/PS2_MOUSE/RTL/ariphmetic/aruphmetic_tb.v {1 {vlog -work work -stats=none F:/Programming/FPGA/PS2_MOUSE/RTL/ariphmetic/aruphmetic_tb.v
+Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+-- Compiling module ariphmetic_tb
+
+Top level modules:
+	ariphmetic_tb
+
+} {} {}}
