@@ -1,10 +1,15 @@
+//Date: 17.02.2020
+//Counter of Z axis
+
+`include "ariphmetic.v"
+
 module ariphmetic_register(
 	input rst,
 	input package_done,
 	input [8:0] x_axis,
 	input [8:0] y_axis,
 	
-	output reg [9:0] z_reg);
+	output reg [15:0] z_reg);
 	
 	wire [8:0] z_wire;
 	
