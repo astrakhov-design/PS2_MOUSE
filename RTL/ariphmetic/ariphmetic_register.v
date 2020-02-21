@@ -1,7 +1,5 @@
-//Date: 17.02.2020
-//Counter of Z axis
-
-`include "ariphmetic.v"
+//counting register for Z axis
+//Date: 21.02.2020
 
 module ariphmetic_register(
 	input rst,

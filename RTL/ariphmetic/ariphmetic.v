@@ -1,7 +1,3 @@
-//Date: 02/17/2020
-//Ariphmetic module for Piphagore theorem
-
-
 module ariphmetic(
 	input [8:0] x_axis,
 	input [8:0] y_axis,
@@ -17,10 +13,15 @@ module ariphmetic(
 	assign y_normal = y_axis[8] ? ( ~(y_axis[7:0] - 1)) : ( y_axis[7:0] );
 	
 	//x2 and y2
+	wire [7:0] x_divided;
+	wire [7:0] y_divided;
+	
+	assign x_divided = x_normal >>> 3'b100;
+	assign y_divided = y_normal >>> 3'b100;
 	
 	wire [15:0] x2, y2;
-	assign x2 = x_normal * x_normal;
-	assign y2 = y_normal * y_normal;
+	assign x2 = x_divided * x_divided;
+	assign y2 = y_divided * y_divided;
 	
 	wire [17:0] z2;
 	assign z2 = x2 + y2;
