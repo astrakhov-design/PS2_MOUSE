@@ -1,5 +1,8 @@
-//date: 01.09.2020
+//date: 09.01.2020
 //PS/2 mouse interface
+
+`include "stream_FSM.v"
+`include "../ps2_rxtx/ps2_rxtx.v"
 
 module mouse(
 	input clk, rst,
@@ -9,7 +12,6 @@ module mouse(
 	output wire package_done_tick
 	);
 			
-	
 	wire [7:0] tx_data;
 	wire [7:0] rx_data;
 	wire wr_ps2;

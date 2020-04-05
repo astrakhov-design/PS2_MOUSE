@@ -1,5 +1,5 @@
 //LED controller for PS2 controller
-//date: 01.10.2020
+//date: 10.01.2020
 module led_controller(
 	input clk, rst,
 	input [7:0] x_axis,

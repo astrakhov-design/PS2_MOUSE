@@ -1,8 +1,12 @@
 //counting register for Z axis
 //Date: 21.02.2020
 
+`include "ariphmetic.v"
+
 module ariphmetic_register(
+	input clk,
 	input rst,
+	input reset_registers,
 	input package_done,
 	input [8:0] x_axis,
 	input [8:0] y_axis,
@@ -17,11 +21,11 @@ module ariphmetic_register(
 		.z_axis(z_wire)
 	);
 	
-	always @ (posedge package_done, posedge rst)
+	always @ (posedge clk, posedge rst, posedge reset_registers)
 		begin
-			if (rst)
+			if (rst || reset_registers)
 				z_reg <= 0;
-			else
+			else if (package_done)
 				z_reg <= z_reg + z_wire;
 		end
 		

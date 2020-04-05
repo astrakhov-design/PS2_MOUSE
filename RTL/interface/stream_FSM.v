@@ -1,5 +1,5 @@
 //FSM for STREAM mode
-//date: 01.17.2020
+//date: 17.01.2020
 
 module stream_FSM(
 	input clk, rst,

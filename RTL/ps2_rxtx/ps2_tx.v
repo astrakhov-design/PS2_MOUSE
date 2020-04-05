@@ -1,4 +1,4 @@
-//date: 01.07.2020
+//date: 07.01.2020
 //from "FPGA Prototyping by Verilog"
 
 module ps2_tx(

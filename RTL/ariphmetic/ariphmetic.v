@@ -1,3 +1,10 @@
+//Ariphmetic module for PS2_mouse
+//Author: Aleksander Strakhov
+//Date: 05.04.2020
+//1. Translation input coordinates from two's complement to unsigned
+//2. Divide coordinates by 4
+//3. Computing Z_axis by pythagorean theorem
+
 module ariphmetic(
 	input [8:0] x_axis,
 	input [8:0] y_axis,
@@ -9,8 +16,8 @@ module ariphmetic(
 	wire [7:0] x_normal;
 	wire [7:0] y_normal;
 	
-	assign x_normal = x_axis[8] ? ( ~(x_axis[7:0] - 1)) : ( x_axis[7:0] );
-	assign y_normal = y_axis[8] ? ( ~(y_axis[7:0] - 1)) : ( y_axis[7:0] );
+	assign x_normal = x_axis[8] ? ( ~(x_axis[7:0] - 1'b1)) : ( x_axis[7:0] );
+	assign y_normal = y_axis[8] ? ( ~(y_axis[7:0] - 1'b1)) : ( y_axis[7:0] );
 	
 	//x2 and y2
 	wire [7:0] x_divided;
