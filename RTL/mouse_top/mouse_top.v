@@ -3,7 +3,6 @@
 //upd1: 01.27.2020
 //upd2: 04.05.2020
 
-`include "../ps2_rxtx/ps2_rxtx.v"
 `include "../ariphmetic/ariphmetic_register.v"
 `include "../bcd_decoder/bcd_decoder.v"
 `include "../interface/mouse.v"

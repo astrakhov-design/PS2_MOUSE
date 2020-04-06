@@ -2,7 +2,7 @@
 //Author: Aleksander Strakhov
 //Date: 05.04.2020
 
-`include "add3.v"
+`inlcude "add3.v"
 
 module bcd_decoder(
 	input [15:0] B,

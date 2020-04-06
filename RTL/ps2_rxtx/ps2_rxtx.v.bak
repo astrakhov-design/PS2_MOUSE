@@ -1,7 +1,7 @@
 //date: 08.01.2020
 //from "FPGA Prototyping by Verilog"
 
-`include "ps2_rx.v"
+`inlcude "ps2_rx.v"
 `include "ps2_tx.v"
 
 module ps2_rxtx(
