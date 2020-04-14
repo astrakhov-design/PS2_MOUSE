@@ -1,0 +1,93 @@
+//Text generating module for PS2_MOUSE
+//Author: Aleksander Strakhov
+//Date: 08.04.2020
+
+
+module ps2_mouse_text(
+	input clk,
+	
+	input [3:0] z_axis_ten_thousands,
+	input [3:0] z_axis_thousands,
+	input [3:0] z_axis_hundreds,
+	input [3:0] z_axis_tens,
+	input [3:0] z_axis_units,
+	
+	input [9:0] pix_x, pix_y,
+	
+	output reg [2:0] text_rgb
+);
+
+	wire [9:0] rom_addr;
+	reg [6:0] char_addr, char_addr_z;
+	reg [3:0] row_addr;
+	wire [3:0] row_addr_z;
+	reg [2:0] bit_addr;
+	wire [2:0] bit_addr_z;
+	wire [7:0] font_word;
+	wire font_bit, z_axis_on;
+	wire [7:0] rule_rom_addr;
+	
+	LCD_character_bitmap bitmap_unit(
+		.clk(clk),
+		.addr(rom_addr),
+		.data(font_word)
+	);
+	
+	//---------------------------------
+	//z-axis region
+	//display chars: "TRACKING COUNT: DDDDD"
+	//---------------------------------
+	assign z_axis_on = (pix_x[9:5] == 0) && (pix_x[9:4] < 5'd21);
+	assign row_addr_z = pix_y[4:1];
+	assign bit_addr_z = pix_x[3:1];
+	
+	always @*
+		case (pix_x[7:3])
+			5'd0: 	char_addr_z = 7'h34; // T
+			5'd1: 	char_addr_z = 7'h32; // R
+			5'd2: 	char_addr_z = 7'h21; // A
+			5'd3: 	char_addr_z = 7'h23; // C
+			5'd4: 	char_addr_z = 7'h2b; // K
+			5'd5: 	char_addr_z = 7'h29; // I
+			5'd6: 	char_addr_z = 7'h2e; // N
+			5'd7: 	char_addr_z = 7'h27; // G
+			5'd8: 	char_addr_z = 7'h00; // space
+			5'd9:	char_addr_z = 7'h23; // C
+			5'd10: 	char_addr_z = 7'h2f; // O
+			5'd11: 	char_addr_z = 7'h35; // U
+			5'd12: 	char_addr_z = 7'h2e; // N
+			5'd13: 	char_addr_z = 7'h34; // T
+			5'd14:	char_addr_z = 7'h1a; // :
+			5'd15:	char_addr_z = 7'h00; // space
+			5'd16: 	char_addr_z = {3'b001, z_axis_ten_thousands};
+			5'd17:	char_addr_z = {3'b001, z_axis_thousands};
+			5'd18:	char_addr_z = {3'b001, z_axis_thousands};
+			5'd19:	char_addr_z = {3'b001, z_axis_tens};
+			5'd20:	char_addr_z = {3'b001, z_axis_units};
+		endcase
+		
+		
+		
+	//------------------------------------
+	//mux for font ROM addresses and rgb
+	//------------------------------------
+	always @*
+	begin
+		text_rgb = 3'b000;
+		if(z_axis_on)
+		begin
+			char_addr = char_addr_z;
+			row_addr = row_addr_z;
+			bit_addr = bit_addr_z;
+			if(font_bit)
+				text_rgb = 3'b111;
+		end
+	end
+	
+	//-----------------------------------
+	//font rom interface
+	//-----------------------------------
+	assign rom_addr = {char_addr, row_addr};
+	assign font_bit = font_word[~bit_addr];
+	
+endmodule	

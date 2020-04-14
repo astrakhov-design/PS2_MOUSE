@@ -1,10 +1,10 @@
-//BCD Decoder for PS2_MOUSE
+//BCD Decoder for PS2_MOUSE 16bit
 //Author: Aleksander Strakhov
 //Date: 05.04.2020
 
 `include "add3.v"
 
-module bcd_decoder(
+module bcd_decoder_16bit(
 	input [15:0] B,
 	output [3:0] ten_thousands,
 	output [3:0] thousands,

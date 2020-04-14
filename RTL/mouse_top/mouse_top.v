@@ -1,12 +1,15 @@
 //mouse testing circut top module
-//date: 01.10.2020
-//upd1: 01.27.2020
-//upd2: 04.05.2020
+//date: 10.01.2020
+//upd1: 27.01.2020
+//upd2: 05.04.2020
+//upd3: 13.04.2020
+//upd4: 14.04.2020
 
 `include "../ariphmetic/ariphmetic_register.v"
 `include "../bcd_decoder/bcd_decoder.v"
 `include "../interface/mouse.v"
 `include "../led_controller/led_controller.v"
+`include "../vga_text/ps2_mouse_VGA_top.v"
 
 module mouse_top(
 	input clk, rst,
@@ -19,7 +22,12 @@ module mouse_top(
 	output done_tick_led,
 	
 	output [6:0] sseg,
-	output [3:0] anode );
+	output [3:0] anode,
+
+	output hsync,
+	output vsync,
+	output [2:0] vga_rgb
+	);
 	
 	wire reset;
 	assign reset = ~rst;
@@ -54,21 +62,37 @@ module mouse_top(
 	wire [3:0] ten_thousands, thousands,
 				hundreds, tens, units;
 				
-	bcd_decoder bcd(.B(z_axis),
-				.ten_thousands(ten_thousands),
-				.thousands(thousands),
-				.hundreds(hundreds),
-				.tens(tens),
-				.units(units)
-			);
-	
-	
-	
+	bcd_decoder bcd(
+		.B(z_axis),
+		.ten_thousands(ten_thousands),
+		.thousands(thousands),
+		.hundreds(hundreds),
+		.tens(tens),
+		.units(units)
+	);
+		
 	led_controller led_uut(
-		.clk(clk), .rst(reset),
-		.x_axis({ten_thousands, thousands}), .y_axis({hundreds, tens}),
-		.sseg(sseg), .anode(anode) );
-
+		.clk(clk),
+		.rst(reset),
+		.x_axis({ten_thousands, thousands}),
+		.y_axis({hundreds, tens}),
+		.sseg(sseg),
+		.anode(anode)
+	);
+	
+	ps2_mouse_VGA_top vga_unit(
+		.clk(clk),
+		.rst(reset),
+		.ten_thousands(ten_thousands),
+		.thousands(thousands),
+		.hundreds(hundreds),
+		.tens(tens),
+		.units(units),
+		.hsync(hsync),
+		.vsync(vsync),
+		.vga_rgb(vga_rgb)
+	);
+		
 	//assign x_over_led = x_over;
 	//assign y_over_led = y_over;
 	assign done_tick_led = ~done_tick;
