@@ -4,16 +4,17 @@
 //upd2: 05.04.2020
 //upd3: 13.04.2020
 //upd4: 14.04.2020
+//upd5: 16.04.2020
 
-`include "../ariphmetic/ariphmetic_register.v"
-`include "../bcd_decoder/bcd_decoder.v"
+`include "../ariphmetic/ariphmetic_register_bcd.v"
 `include "../interface/mouse.v"
 `include "../led_controller/led_controller.v"
 `include "../vga_text/ps2_mouse_VGA_top.v"
+`include "../mouse_button_counter/button_counter_bcd.v"
 
 module mouse_top(
 	input clk, rst,
-	input reset_registers,
+	input reset_register,
 	inout ps2d, ps2c,
 	
 	output middle_led,
@@ -32,7 +33,7 @@ module mouse_top(
 	wire reset;
 	assign reset = ~rst;
 	wire nreset_reg;
-	assign nreset_reg = ~reset_registers;
+	assign nreset_reg = ~reset_register;
 	//axis with overflow
 	wire [8:0] x_input, y_input;
 	wire [2:0] btnm_led;
@@ -40,7 +41,7 @@ module mouse_top(
 	wire done_tick;
 	//reg x_over, y_over;
 	wire [15:0] z_axis;
-	
+		
 	mouse mouse_uut(
 		.clk(clk), .rst(reset),
 		.ps2d(ps2d), .ps2c(ps2c),
@@ -49,33 +50,40 @@ module mouse_top(
 		.package_done_tick(done_tick)
 	);
 	
-	ariphmetic_register ariphmetic_uut(
+	wire [19:0] ariphmetic_bcd;
+	
+	ariphmetic_register_bcd ariphmetic_register_bcd_unit(
 		.clk(clk),
 		.rst(reset),
-		.reset_registers(nreset_reg),
-		.package_done(done_tick),
+		.reset_button(nreset_reg),
+		.done_tick(done_tick),
 		.x_axis(x_input),
 		.y_axis(y_input),
-		.z_reg(z_axis)
+		.ariphmetic_bcd(ariphmetic_bcd)
 	);
 	
-	wire [3:0] ten_thousands, thousands,
-				hundreds, tens, units;
-				
-	bcd_decoder bcd(
-		.B(z_axis),
-		.ten_thousands(ten_thousands),
-		.thousands(thousands),
-		.hundreds(hundreds),
-		.tens(tens),
-		.units(units)
+	wire [9:0] left_bcd;
+	wire [9:0] middle_bcd;
+	wire [9:0] right_bcd;
+	
+	button_counter_bcd button_counter_bcd_unit(
+		.clk(clk),
+		.rst(reset),
+		.reset_button(nreset_reg),
+		.left_button(btnm_led[0]),
+		.middle_button(btnm_led[2]),
+		.right_button(btnm_led[1]),
+		.left_bcd(left_bcd),
+		.middle_bcd(middle_bcd),
+		.right_bcd(right_bcd)
 	);
+	
 		
 	led_controller led_uut(
 		.clk(clk),
 		.rst(reset),
-		.x_axis({ten_thousands, thousands}),
-		.y_axis({hundreds, tens}),
+		.x_axis(ariphmetic_bcd[19:12]),
+		.y_axis(ariphmetic_bcd[11:4]),
 		.sseg(sseg),
 		.anode(anode)
 	);
@@ -83,11 +91,10 @@ module mouse_top(
 	ps2_mouse_VGA_top vga_unit(
 		.clk(clk),
 		.rst(reset),
-		.ten_thousands(ten_thousands),
-		.thousands(thousands),
-		.hundreds(hundreds),
-		.tens(tens),
-		.units(units),
+		.ariphmetic_bcd(ariphmetic_bcd),
+		.left_bcd(left_bcd),
+		.middle_bcd(middle_bcd),
+		.right_bcd(right_bcd),
 		.hsync(hsync),
 		.vsync(vsync),
 		.vga_rgb(vga_rgb)

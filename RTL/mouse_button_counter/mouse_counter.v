@@ -2,7 +2,6 @@
 //Author: Aleksander Strakhov
 //Date: 14.04.2020
 
-
 module button_counter(
 	input clk,
 	input rst,
@@ -25,11 +24,11 @@ module button_counter(
 	wire pressed_tick;
 	assign pressed_tick = (filter_reg == 8'b1111_1111) ? 1'b1 : 1'b0;
 	
-	always @ (posedge clk, posedge rst, posedge reset_register)
+	always @ (posedge pressed_tick, posedge rst, posedge reset_register)
 		begin
 			if (rst || reset_register)
 				counter <= 8'd0;
-			else if (pressed_tick)
+			else
 				counter <= counter + 1'b1;
 		end
 		

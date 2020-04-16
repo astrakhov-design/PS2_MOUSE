@@ -2,7 +2,7 @@
 //Author: Aleksander Strakhov
 //Date: 14.04.2020
 
-//`include "add3.v"
+`include "add3.v"
 
 module bcd_decoder_8bit(
 	input [7:0] A,

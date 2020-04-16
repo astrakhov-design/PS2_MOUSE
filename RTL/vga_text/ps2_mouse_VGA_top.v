@@ -8,11 +8,10 @@
 module ps2_mouse_VGA_top(
 	input clk,
 	input rst,
-	input [3:0] ten_thousands,
-	input [3:0] thousands,
-	input [3:0] hundreds,
-	input [3:0] tens,
-	input [3:0] units,
+	input [19:0] ariphmetic_bcd,
+	input [9:0] left_bcd,
+	input [9:0] middle_bcd,
+	input [9:0] right_bcd,
 	
 	output hsync,
 	output vsync,
@@ -25,11 +24,26 @@ module ps2_mouse_VGA_top(
 	reg [2:0] rgb_reg;
 	wire [2:0] rgb_next;
 	
-	reg [3:0] ten_thousands_reg,
-			  thousands_reg,
-			  hundreds_reg,
-			  tens_reg,
-			  units_reg;
+	reg [3:0]	ten_thousands_reg,
+				thousands_reg,
+				hundreds_reg,
+				tens_reg,
+				units_reg;
+			  
+	reg [3:0] 	left_hundreds_reg,
+				left_tens_reg,
+				left_units_reg;
+				
+	reg [3:0]	middle_hundreds_reg,
+				middle_tens_reg,
+				middle_units_reg;
+				
+	reg [3:0]	right_hundreds_reg,
+				right_tens_reg,
+				right_units_reg;
+				
+	wire [3:0] left_hundreds;
+	assign left_hundreds = {2'b00, left_bcd[9:8]};
 			  
 	always @ (posedge clk, posedge rst)
 		begin
@@ -40,13 +54,39 @@ module ps2_mouse_VGA_top(
 				hundreds_reg <= 4'd0;
 				tens_reg <= 4'd0;
 				units_reg <= 4'd0;
+				
+				left_hundreds_reg <= 4'd0;
+				left_tens_reg <= 4'd0;
+				left_units_reg <= 4'd0;
+				
+				middle_hundreds_reg <= 4'd0;
+				middle_tens_reg <= 4'd0;
+				middle_units_reg <= 4'd0;
+				
+				right_hundreds_reg <= 4'd0;
+				right_tens_reg <= 4'd0;
+				right_units_reg <= 4'd0;
 			end
 			else begin
-				ten_thousands_reg <= ten_thousands;
-				thousands_reg <= thousands;
-				hundreds_reg <= hundreds;
-				tens_reg <= tens;
-				units_reg <= units;
+				ten_thousands_reg <= ariphmetic_bcd[19:16];
+				thousands_reg <= ariphmetic_bcd[15:12];
+				hundreds_reg <= ariphmetic_bcd[11:8];
+				tens_reg <= ariphmetic_bcd[7:4];
+				units_reg <= ariphmetic_bcd[3:0];
+				
+				left_hundreds_reg <= left_hundreds;
+				left_tens_reg <= left_bcd[7:4];
+				left_units_reg <= left_bcd[3:0];
+				
+				middle_hundreds_reg <= {2'b00,
+							middle_bcd[9:8]};
+				middle_tens_reg <= middle_bcd[7:4];
+				middle_units_reg <= middle_bcd[3:0];
+				
+				right_hundreds_reg <= {2'b00,
+							right_bcd[9:8]};
+				right_tens_reg <= right_bcd[7:4];
+				right_units_reg <= right_bcd[3:0];
 			end
 		end
 				
@@ -71,6 +111,15 @@ module ps2_mouse_VGA_top(
 		.z_axis_hundreds(hundreds_reg),
 		.z_axis_tens(tens_reg),
 		.z_axis_units(units_reg),
+		.left_button_hundreds(left_hundreds_reg),
+		.left_button_tens(left_tens_reg),
+		.left_button_units(left_units_reg),
+		.middle_button_hundreds(middle_hundreds_reg),
+		.middle_button_tens(middle_tens_reg),
+		.middle_button_units(middle_units_reg),
+		.right_button_hundreds(right_hundreds_reg),
+		.right_button_tens(right_tens_reg),
+		.right_button_units(right_units_reg),
 		.pix_x(pixel_x),
 		.pix_y(pixel_y),
 		.text_rgb(rgb_next)
