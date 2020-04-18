@@ -58,8 +58,8 @@ module ps2_mouse_text(
 	wire char_comment_on;
 	assign char_comment_on = (pix_y[9:3] == 7'd0
 	|| pix_y[9:3] == 7'd4
-	|| pix_y[9:3] == 7'd8
-	||	pix_y[9:3] == 7'd13) && (pix_x[9:3] < 5'd31);
+	|| pix_y[9:3] == 7'd6
+	||	pix_y[9:3] == 7'd11) && (pix_x[9:3] < 5'd31);
 	always @*
 		begin
 			if(pix_x[7:3] < 5'd15)
@@ -211,8 +211,7 @@ module ps2_mouse_text(
 			5'd20:	char_addr_z = {3'b001, z_axis_units};
 			default: char_addr_z = 7'h00;
 		endcase
-		
-	
+
 	//------------------------------------
 	//button status area
 	//display chars: "BUTTON STATUS"
@@ -220,7 +219,7 @@ module ps2_mouse_text(
 	//area parameters
 	reg [6:0] char_btnm_status;
 	wire char_btnm_on;
-	assign char_btnm_on = (pix_y[9:3] == 7'd9) && (pix_x[9:3] < 5'd31);
+	assign char_btnm_on = (pix_y[9:3] == 7'd7) && (pix_x[9:3] < 5'd31);
 	always @*
 		case (pix_x[7:3])
 			5'd0:	char_btnm_status = 7'h22; //B
@@ -246,7 +245,7 @@ module ps2_mouse_text(
 	//area parameters
 	reg [6:0] char_left_button;
 	wire char_left_on;
-	assign char_left_on = (pix_y[9:3] == 7'd10) && (pix_x[9:3] < 5'd31);
+	assign char_left_on = (pix_y[9:3] == 7'd8) && (pix_x[9:3] < 5'd31);
 	always @*
 		case (pix_x[7:3])
 			5'd0:	char_left_button = 7'h2c; //L
@@ -261,8 +260,52 @@ module ps2_mouse_text(
 			default:	char_left_button = 7'h00;
 		endcase
 
-
-	
+	//------------------------------------
+	//middle button counter
+	//display chars: "MIDDLE: DDD"
+	//------------------------------------
+	//area parameters
+	reg [6:0] char_middle_button;
+	wire char_middle_on;
+	assign char_middle_on = (pix_y[9:3] == 7'd9) && (pix_x[9:3] < 5'd31);
+	always @*
+		case (pix_x[7:3])
+			5'd0:	char_middle_button = 7'h2d; //M
+			5'd1:	char_middle_button = 7'h29; //I
+			5'd2:	char_middle_button = 7'h24; //D
+			5'd3:	char_middle_button = 7'h24; //D
+			5'd4:	char_middle_button = 7'h2c; //L
+			5'd5:	char_middle_button = 7'h25; //E
+			5'd6:	char_middle_button = 7'h1a; //:
+			5'd7:	char_middle_button = 7'h00; //space
+			5'd8:	char_middle_button = {3'b001, middle_button_hundreds};
+			5'd9:	char_middle_button = {3'b001, middle_button_tens};
+			5'd10:	char_middle_button = {3'b001, middle_button_units};
+			default:	char_middle_button = 7'h00;
+		endcase
+		
+	//-------------------------------------
+	//right button counter
+	//display chars: "RIGHT: DDD"
+	//-------------------------------------
+	//area parameters
+	reg [6:0] char_right_button;
+	wire char_right_on;
+	assign char_right_on = (pix_y[9:3] == 8'd10) && (pix_x[9:3] < 5'd31);
+	always @*
+		case (pix_x[7:3])
+			5'd0:	char_right_button = 7'h32; //R
+			5'd1:	char_right_button = 7'h29; //I
+			5'd2:	char_right_button = 7'h27; //G
+			5'd3:	char_right_button = 7'h28; //H
+			5'd4:	char_right_button = 7'h34; //T
+			5'd5:	char_right_button = 7'h1a; //:
+			5'd6:	char_right_button = 7'h00; //space
+			5'd7:	char_right_button = {3'b001, right_button_hundreds};
+			5'd8:	char_right_button = {3'b001, right_button_tens};
+			5'd9:	char_right_button = {3'b001, right_button_units};
+			default: char_right_button = 7'h00;
+		endcase
 		
 	//------------------------------------
 	//mux for font ROM addresses and rgb
@@ -326,6 +369,22 @@ module ps2_mouse_text(
 			else if(char_left_on)
 			begin
 				char_addr = char_left_button;
+				if(font_bit)
+					text_rgb = 3'b111;
+				else
+					text_rgb = 3'b000;
+			end
+			else if(char_middle_on)
+			begin
+				char_addr = char_middle_button;
+				if(font_bit)
+					text_rgb = 3'b111;
+				else
+					text_rgb = 3'b000;
+			end
+			else if(char_right_on)
+			begin
+				char_addr = char_right_button;
 				if(font_bit)
 					text_rgb = 3'b111;
 				else
