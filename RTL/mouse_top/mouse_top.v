@@ -27,7 +27,10 @@ module mouse_top(
 
 	output hsync,
 	output vsync,
-	output [2:0] vga_rgb
+	
+	output [4:0] VR,
+	output [5:0] VG,
+	output [4:0] VB
 	);
 	
 	wire reset;
@@ -99,6 +102,10 @@ module mouse_top(
 		.vsync(vsync),
 		.vga_rgb(vga_rgb)
 	);
+
+	assign VR = vga_rgb[0] ? 5'b11111 : 5'b00000;
+	assign VG = vga_rgb[1] ? 6'b111_111 : 6'b000_000;
+	assign VB = vga_rgb[2] ? 5'b11111 : 5'b00000;
 		
 	//assign x_over_led = x_over;
 	//assign y_over_led = y_over;
